@@ -1,0 +1,58 @@
+
+plugins {
+  id 'java'
+  id 'eclipse'
+  id 'maven'
+}
+
+/*
+ * Gets the version name from the latest Git tag of the form V-X.Y where X and Y are version numbers
+ */
+def getVersionName = { ->
+  def stdout = new ByteArrayOutputStream()
+  exec {
+    commandLine 'git', 'describe', '--tags', '--match', 'V-*.*'
+    standardOutput = stdout
+  }
+  def v = stdout.toString().trim() =~ /V-(\d+)\.(\d+)(?:-(\d+)-)?/
+  return v[0][1] + "." + v[0][2] + "." + (v[0][3] == null ? 0 : v[0][3])
+}
+
+group = 'ch.kerbtier.struwwel'
+version = getVersionName()
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  compile 'com.google.guava:guava:18.0'
+
+  testCompile 'org.testng:testng:6.9.6'
+}
+
+test {
+  useTestNG()
+  
+  testLogging {
+    exceptionFormat = 'full'
+    showStandardStreams = true
+  }
+  
+  maxHeapSize = '8m'
+}
+
+jar {
+  baseName = 'struwwel'
+  version =  version
+  manifest {
+    attributes 'Implementation-Title': 'struwwel', 'Implementation-Version': version
+  }
+}
+
+
+
+
