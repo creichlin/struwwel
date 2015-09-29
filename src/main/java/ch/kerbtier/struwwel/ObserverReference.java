@@ -37,7 +37,7 @@ public class ObserverReference {
   }
 
   /**
-   * weakHashMap looses references to values only when i'ts mutated, not when
+   * weakHashMap looses references to values only when it is mutated, not when
    * actually key is garbage collected. the following mutation triggers that and
    * can be used for tests. System.gc(); clean(); System.gc(); will release
    * those values probably... depending on vm.

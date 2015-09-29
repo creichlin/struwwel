@@ -20,7 +20,7 @@ This should help improve that problem by allowing to define when the observer sh
 Warning
 -------
 
-There is no guarantee though that this is helpful.
+There is no guarantee that this is helpful.
 So far i have only used it in some very limited cases without proper experience.
 It might also produce some other problems in the long term.
 

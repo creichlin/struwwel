@@ -27,16 +27,16 @@ public class Observable {
   }
 
   public void inform() {
-    List<WeakReference<Runnable>> tor = new ArrayList<>();
+    List<WeakReference<Runnable>> toRemove = new ArrayList<>();
     for (WeakReference<Runnable> wr : observers) {
       Runnable r = wr.get();
       if (r != null) {
         r.run();
       } else {
-        tor.add(wr);
+        toRemove.add(wr);
       }
     }
-    tor.removeAll(tor);
+    observers.removeAll(toRemove);
   }
 
   void makeWeak(Runnable runnable) {
