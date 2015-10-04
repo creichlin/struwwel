@@ -10,37 +10,37 @@ public class Observable {
   private final List<WeakReference<Runnable>> observers = new ArrayList<>();
   private final Set<Runnable> hard = new HashSet<>();
 
-  public ObserverReference registerWeak(Runnable run) {
-    return register(run, true);
+  public ObserverReference registerWeak(Runnable observer) {
+    return register(observer, true);
   }
   
-  public ObserverReference register(Runnable run) {
-    return register(run, false);
+  public ObserverReference register(Runnable observer) {
+    return register(observer, false);
   }
   
-  public ObserverReference register(Runnable run, boolean weak) {
-    observers.add(new WeakReference<>(run));
+  public ObserverReference register(Runnable observer, boolean weak) {
+    observers.add(new WeakReference<>(observer));
     if(!weak) {
-      hard.add(run);
+      hard.add(observer);
     }
-    return new ObserverReference(this, run);
+    return new ObserverReference(this, observer);
   }
 
   public void inform() {
     List<WeakReference<Runnable>> toRemove = new ArrayList<>();
-    for (WeakReference<Runnable> wr : observers) {
-      Runnable r = wr.get();
-      if (r != null) {
-        r.run();
+    for (WeakReference<Runnable> observerReference : observers) {
+      Runnable observer = observerReference.get();
+      if (observer != null) {
+        observer.run();
       } else {
-        toRemove.add(wr);
+        toRemove.add(observerReference);
       }
     }
     observers.removeAll(toRemove);
   }
 
-  void makeWeak(Runnable runnable) {
-    hard.remove(runnable);
+  void makeWeak(Runnable observer) {
+    hard.remove(observer);
   }
   
   /**
@@ -50,8 +50,8 @@ public class Observable {
    */
   public int count() {
     int count = 0;
-    for (WeakReference<Runnable> wr : observers) {
-      if (wr.get() != null) {
+    for (WeakReference<Runnable> observerReference : observers) {
+      if (observerReference.get() != null) {
         count++;
       }
     }

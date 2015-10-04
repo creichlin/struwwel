@@ -6,43 +6,43 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 public class ObserverReference {
-  private Runnable runnable;
+  private static Map<Object, List<Runnable>> keptObservers = new WeakHashMap<>();
+
+  private Runnable observer;
   private Observable observable;
 
-  private static Map<Object, List<Runnable>> forInstance = new WeakHashMap<>();
-
-  public ObserverReference(Observable listeners, Runnable runnable) {
-    this.runnable = runnable;
-    this.observable = listeners;
+  public ObserverReference(Observable observable, Runnable observer) {
+    this.observer = observer;
+    this.observable = observable;
   }
 
   public ObserverReference weak() {
-    observable.makeWeak(runnable);
+    observable.makeWeak(observer);
     return this;
   }
 
   public ObserverReference keepFor(Object instance) {
 
-    if (!forInstance.containsKey(instance)) {
-      synchronized (forInstance) {
-        if (!forInstance.containsKey(instance)) {
-          forInstance.put(instance, new ArrayList<Runnable>());
+    if (!keptObservers.containsKey(instance)) {
+      synchronized (keptObservers) {
+        if (!keptObservers.containsKey(instance)) {
+          keptObservers.put(instance, new ArrayList<Runnable>());
         }
       }
     }
-    forInstance.get(instance).add(runnable);
+    keptObservers.get(instance).add(observer);
 
-    observable.makeWeak(runnable);
+    observable.makeWeak(observer);
     return this;
   }
 
   /**
-   * weakHashMap looses references to values only when it is mutated, not when
-   * actually key is garbage collected. the following mutation triggers that and
-   * can be used for tests. System.gc(); clean(); System.gc(); will release
-   * those values probably... depending on vm.
+   * WeakHashMap looses references to values only when it is mutated, not when
+   * the key is garbage collected. the following mutation triggers that removal of references.
+   * 
+   * There should be no need to use this method in real code. It's for testing.
    */
   public static void clean() {
-    forInstance.put(new Object(), new ArrayList<Runnable>());
+    keptObservers.put(new Object(), new ArrayList<Runnable>());
   }
 }

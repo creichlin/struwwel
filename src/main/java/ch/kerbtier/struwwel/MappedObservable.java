@@ -6,12 +6,12 @@ import java.util.Map;
 public class MappedObservable<T> {
   private final Map<T, Observable> observables = new HashMap<>();
 
-  public ObserverReference register(T name, Runnable run) {
+  public ObserverReference register(T name, Runnable observer) {
     if (!observables.containsKey(name)) {
       observables.put(name, new Observable());
     }
-    observables.get(name).register(run);
-    return new ObserverReference(observables.get(name), run);
+    observables.get(name).register(observer);
+    return new ObserverReference(observables.get(name), observer);
   }
 
   public void inform(T name) {

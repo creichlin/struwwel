@@ -12,7 +12,7 @@ As long as observers and observables get garbage collected from time to time it'
 This is the case in most GUI toolkits for example. But there are often situations where this holds not true. Many programmers
 are even unaware that this can cause problems.
 
-The common aproach to prevent this is to unregister the observer from the observable. This is often done at a different
+The common approach to prevent this is to unregister the observer from the observable. This is often done at a different
 location in the code and often in a place where it's difficult to find where the related piece of code is which added it.
 
 This should help improve that problem by allowing to define when the observer should be unregistered while registering it.
@@ -24,6 +24,7 @@ There is no guarantee that this is helpful.
 So far i have only used it in some very limited cases without proper experience.
 It might also produce some other problems in the long term.
 
+It will not work in multithreaded code so far.
 
 Also it's still kind of limited.
 
